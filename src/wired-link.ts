@@ -1,13 +1,22 @@
-import { customElement, property, css, TemplateResult, html, CSSResultArray, query } from 'lit-element';
-import { WiredBase, BaseCSS } from 'wired-lib/lib/wired-base';
-import { line, Point } from 'wired-lib';
+import {
+  customElement,
+  property,
+  css,
+  TemplateResult,
+  html,
+  CSSResultArray,
+  query
+} from "lit-element";
+import { WiredBase, BaseCSS } from "wired-lib/lib/wired-base";
+import { line, Point } from "wired-lib";
 
-@customElement('wired-link')
+@customElement("wired-link")
 export class WiredLink extends WiredBase {
   @property({ type: Number }) elevation = 1;
   @property({ type: String }) href?: string;
   @property({ type: String }) target?: string;
-  @query('a') private anchor?: HTMLAnchorElement;
+  @property({ type: String }) rel?: string;
+  @query("a") private anchor?: HTMLAnchorElement;
 
   static get styles(): CSSResultArray {
     return [
@@ -17,7 +26,9 @@ export class WiredLink extends WiredBase {
           display: inline-block;
           position: relative;
         }
-        a, a:hover, a:visited {
+        a,
+        a:hover,
+        a:visited {
           color: inherit;
           outline: none;
           display: inline-block;
@@ -38,10 +49,15 @@ export class WiredLink extends WiredBase {
 
   render(): TemplateResult {
     return html`
-    <a href="${this.href}" target="${this.target || ''}">
-      <slot></slot>
-      <div id="overlay"><svg></svg></div>
-    </a>
+      <a
+        href="${this.href}"
+        target="${this.target || ""}"
+        rel="${this.rel || ""}"
+        title="${this.title || ""}"
+      >
+        <slot></slot>
+        <div id="overlay"><svg></svg></div>
+      </a>
     `;
   }
 
@@ -58,7 +74,7 @@ export class WiredLink extends WiredBase {
       const size = this.anchor.getBoundingClientRect();
       const elev = Math.min(Math.max(1, this.elevation), 5);
       const w = size.width;
-      const h = size.height + ((elev - 1) * 2);
+      const h = size.height + (elev - 1) * 2;
       return [w, h];
     }
     return this.lastSize;
@@ -68,11 +84,11 @@ export class WiredLink extends WiredBase {
     const elev = Math.min(Math.max(1, this.elevation), 5);
     const s = {
       width: size[0],
-      height: size[1] - ((elev - 1) * 2)
+      height: size[1] - (elev - 1) * 2
     };
     for (let i = 0; i < elev; i++) {
-      line(svg, 0, s.height + (i * 2) - 2, s.width, s.height + (i * 2) - 2);
-      line(svg, 0, s.height + (i * 2) - 2, s.width, s.height + (i * 2) - 2);
+      line(svg, 0, s.height + i * 2 - 2, s.width, s.height + i * 2 - 2);
+      line(svg, 0, s.height + i * 2 - 2, s.width, s.height + i * 2 - 2);
     }
   }
 }
